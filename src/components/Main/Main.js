@@ -2,14 +2,47 @@ import React, { useEffect, useState } from 'react';
 import Selector from '../Selector';
 import CarsTable from '../CarsTable';
 import { getMakes, getModels, getVehicles } from '../../api';
+import SelectedCar from '../SelectedCar';
+
+const useCachedVehicles = (make, model) => {
+  const [vehiclesByBrandAndModel, setVehiclesByBrandAndModel] = useState({});
+  const [cars, setCars] = useState([]);
+
+  useEffect(async () => {
+    if (!make || !model) {
+      setCars([]);
+      return;
+    }
+    if (vehiclesByBrandAndModel?.[make]?.[model]) {
+      setCars(vehiclesByBrandAndModel[make][model]);
+    } else {
+      try {
+        const vehicles = await getVehicles(make, model)
+        setVehiclesByBrandAndModel({
+          ...vehiclesByBrandAndModel,
+          [make]: {
+            ...vehiclesByBrandAndModel[make],
+            [model]: vehicles
+          }
+        });
+        setCars(vehicles);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [make, model]);
+
+  return { cars };
+}
 
 const Main = () => {
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
-  const [vehicles, setVehicles] = useState([]);
   const [selectedMake, setSelectedMake] = useState();
   const [selectedModel, setSelectedModel] = useState();
   const [selectedVehicle, setSelectedVehicle] = useState();
+
+  const { cars } = useCachedVehicles(selectedMake, selectedModel);
 
   useEffect(async () => {
     try {
@@ -21,24 +54,28 @@ const Main = () => {
   }, [])
 
   useEffect(async () => {
-    if (selectedMake) {
-      const models = await getModels(selectedMake)
-      setModels(models);
+    try {
+      if (selectedMake) {
+        const models = await getModels(selectedMake)
+        setModels(models);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }, [selectedMake]);
 
-  useEffect(async () => {
-    if (selectedMake && selectedModel) {
-      const vehicles = await getVehicles(selectedMake, selectedModel)
-      setVehicles(vehicles);
-    }
-  }, [selectedModel]);
+  const changeMake = (make) => {
+    setSelectedModel();
+    setSelectedMake(make)
+  }
 
   return (
     <div>
-      <Selector title="Brand" options={makes} onChange={setSelectedMake} />
+      <Selector title="Brand" options={makes} onChange={changeMake} />
       <Selector title="Model" options={models} onChange={setSelectedModel} />
-      <CarsTable vehicles={vehicles} />
+      <SelectedCar vehicle={selectedVehicle} />
+      <CarsTable title={`${selectedMake} ${selectedModel}`} vehicles={cars} select={setSelectedVehicle} />
+
     </div>
   );
 

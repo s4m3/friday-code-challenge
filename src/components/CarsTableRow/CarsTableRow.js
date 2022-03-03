@@ -1,11 +1,10 @@
 import React from 'react';
 
-const CarsTableRow = ({ vehicle, tableHeads }) => {
-
+const CarsTableRow = ({ vehicle, tableHeads, select }) => {
   return (
     <tr>
       {tableHeads.map(type => (
-        <td>{vehicle[type]}</td>
+        <td onClick={select}>{vehicle[type]}</td>
       ))}
     </tr>
   );

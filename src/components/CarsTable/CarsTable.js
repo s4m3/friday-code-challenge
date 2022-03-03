@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import CarsTableRow from '../CarsTableRow';
 import CarsTableHead from '../CarsTableHead';
+import localization from '../../localization';
 
 const useSortedCars = (vehicles) => {
-
   //MAYBE MOVE TO CONSTANTS?
   const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -19,7 +19,6 @@ const useSortedCars = (vehicles) => {
       return sortingItems;
     }
     sortingItems.sort((a, b) => {
-      // if ascending a -b otherwise b - a?
       if (a[sortedColumn] > b[sortedColumn]) {
         return sortDirection === SORT_DIRECTIONS.ASCENDING ? -1 : 1;
       }
@@ -43,25 +42,27 @@ const useSortedCars = (vehicles) => {
   return { sortedCars, sort };
 }
 
-const CarsTable = ({ vehicles = [] }) => {
+const CarsTable = ({ vehicles = [], title, select }) => {
   const { sortedCars, sort } = useSortedCars(vehicles);
   if (sortedCars.length === 0) {
     return null;
   }
 
-  const tableHeads = Object.keys(sortedCars[0]);
+  // remove make and model as it is the same for all
+  const tableHeads = Object.keys(sortedCars[0]).filter(col => !['make', 'model'].includes(col));
   return (
     <table>
+      <caption>{title}</caption>
       <thead>
       <tr>
         {tableHeads.map(type => (
-          <CarsTableHead type={type} onClick={() => sort(type)} />
+          <CarsTableHead type={localization[type]} onClick={() => sort(type)} />
         ))}
       </tr>
       </thead>
       <tbody>
       {sortedCars.map(vehicle => (
-        <CarsTableRow vehicle={vehicle} tableHeads={tableHeads} />
+        <CarsTableRow vehicle={vehicle} tableHeads={tableHeads} select={() => select(vehicle)} />
       ))}
       </tbody>
     </table>

@@ -3,8 +3,8 @@ const HOST = 'http://localhost:8080';
 /**
  * Surely this is an anti-pattern. I would not do this in a real world application.
  * I would instead log the error and not retry in this way because it would mean that
- * there is a server issue that needs to be investigated. But because the error is triggered
- * randomly I retry until it resolves
+ * there is a server issue that needs to be investigated. Additionally I would use an ErrorBoundary.
+ * But because the error is triggered randomly here, I retry until it resolves
  */
 const MAX_TRIALS = 20;
 const retryUntilResolves = async (call, trials = 0,) => {
