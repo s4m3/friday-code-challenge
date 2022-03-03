@@ -1,7 +1,10 @@
 import React from 'react';
 
-const SelectedCar = ({ vehicle }) => {
-  console.log('vehicle', vehicle);
+type SelectedCarProps = {
+  vehicle: Vehicle | undefined,
+}
+
+const SelectedCar = ({vehicle}: SelectedCarProps) => {
   if (!vehicle) {
     return null;
   }

@@ -1,7 +1,12 @@
 import React from 'react';
 
-const Selector = ({ title, options, onChange }) => {
+type SelectorProps = {
+  title: string,
+  options: string[]
+  onChange(element: string): void;
+}
 
+const Selector = ({title, options, onChange}: SelectorProps) => {
   const isDisabled = options?.length === 0;
   return (
     <div>

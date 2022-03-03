@@ -1,9 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import CarsTableRow from '../CarsTableRow';
 import CarsTableHead from '../CarsTableHead';
 import localization from '../../localization';
 
-const useSortedCars = (vehicles) => {
+interface SortedCarsHook {
+  sortedCars: Vehicle[],
+  sort: (column: keyof Vehicle) => void
+}
+
+const useSortedCars = (vehicles: Vehicle[]): SortedCarsHook => {
   //MAYBE MOVE TO CONSTANTS?
   const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -11,10 +16,11 @@ const useSortedCars = (vehicles) => {
   }
 
   const [sortDirection, setSortDirection] = useState(SORT_DIRECTIONS.ASCENDING);
-  const [sortedColumn, setSortedColumn] = useState(null);
+  const [sortedColumn, setSortedColumn] = useState<keyof Vehicle | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const sortedCars = useMemo(() => {
-    let sortingItems = Array.from(vehicles);
+    let sortingItems: Vehicle[] = Array.from(vehicles);
     if (!sortedColumn) {
       return sortingItems;
     }
@@ -30,8 +36,7 @@ const useSortedCars = (vehicles) => {
     return sortingItems;
   }, [vehicles, sortedColumn, sortDirection]);
 
-  const sort = (column) => {
-    console.log('column', column);
+  const sort = (column: keyof Vehicle) => {
     if (sortedColumn === column && sortDirection === SORT_DIRECTIONS.ASCENDING) {
       setSortDirection(SORT_DIRECTIONS.DESCENDING)
     } else {
@@ -39,30 +44,36 @@ const useSortedCars = (vehicles) => {
     }
     setSortedColumn(column);
   }
-  return { sortedCars, sort };
+  return {sortedCars, sort};
 }
 
-const CarsTable = ({ vehicles = [], title, select }) => {
-  const { sortedCars, sort } = useSortedCars(vehicles);
+type CarsTableProps = {
+  vehicles: Vehicle[],
+  title: string,
+  select(vehicle: Vehicle): void;
+}
+
+const CarsTable = ({vehicles = [], title, select}: CarsTableProps) => {
+  const {sortedCars, sort} = useSortedCars(vehicles);
   if (sortedCars.length === 0) {
     return null;
   }
 
   // remove make and model as it is the same for all
-  const tableHeads = Object.keys(sortedCars[0]).filter(col => !['make', 'model'].includes(col));
+  const columns: (keyof Vehicle)[] = Object.keys(sortedCars[0]).filter(col => !['make', 'model'].includes(col)) as (keyof Vehicle)[];
   return (
     <table>
       <caption>{title}</caption>
       <thead>
       <tr>
-        {tableHeads.map(type => (
-          <CarsTableHead type={localization[type]} onClick={() => sort(type)} />
+        {columns.map(column => (
+          <CarsTableHead type={localization[column]} onClick={() => sort(column)} />
         ))}
       </tr>
       </thead>
       <tbody>
       {sortedCars.map(vehicle => (
-        <CarsTableRow vehicle={vehicle} tableHeads={tableHeads} select={() => select(vehicle)} />
+        <CarsTableRow vehicle={vehicle} columns={columns} onClick={() => select(vehicle)} />
       ))}
       </tbody>
     </table>
