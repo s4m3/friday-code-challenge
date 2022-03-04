@@ -1,0 +1,16 @@
+.card {
+  width: 300px;
+}
+
+.detail-row {
+}
+
+.detail-key {
+  display: inline;
+  font-weight: bold;
+}
+
+.detail-value {
+  display: inline;
+  float: right;
+}

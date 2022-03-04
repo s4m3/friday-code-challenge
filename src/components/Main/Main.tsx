@@ -4,6 +4,8 @@ import CarsTable from '../CarsTable';
 import {getMakes, getModels, getVehicles} from '../../api';
 import SelectedCar from '../SelectedCar';
 
+import './Main.css';
+
 type VehiclesByBrandAndModel = {
   [make: string]: {
     [model: string]: Vehicle[]
@@ -85,12 +87,20 @@ const Main = () => {
   }
 
   return (
-    <div>
-      <Selector title="Brand" options={makes} onChange={changeMake} />
-      <Selector title="Model" options={models} onChange={setSelectedModel} />
+    <div className="app">
+      <header className="header">
+        <h1>Car Selector</h1>
+      </header>
+      <div className="main">
+        <div className="filter">
+          <Selector title="Brand" options={makes} onChange={changeMake} />
+          <Selector title="Model" options={models} onChange={setSelectedModel} />
+        </div>
+        <div className="table">
+          <CarsTable title={`${selectedMake} ${selectedModel}`} vehicles={cars} select={setSelectedVehicle} />
+        </div>
+      </div>
       <SelectedCar vehicle={selectedVehicle} />
-      <CarsTable title={`${selectedMake} ${selectedModel}`} vehicles={cars} select={setSelectedVehicle} />
-
     </div>
   );
 
