@@ -1,6 +1,5 @@
 import getCarValuesByKey from './getCarValuesByKey';
 
-
 describe('getCarValuesByKey', () => {
   it('getCarValuesByKey should be defined', () => {
     expect(getCarValuesByKey).toBeDefined();
@@ -63,9 +62,7 @@ describe('getCarValuesByKey', () => {
       bodyType: ['Limousine'],
       engineCapacity: [1, 2, 4, 5, 8],
       enginePowerPS: [1, 2],
-      enginePowerKW: [1],
-      make: ['BMW'],
-      model: ['3er']
+      enginePowerKW: [1]
     }
     expect(getCarValuesByKey(input)).toEqual(expectedOutput);
   });

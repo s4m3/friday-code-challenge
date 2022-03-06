@@ -1,61 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import Selector from '../Selector';
 import CarsTable from '../CarsTable';
-import {getMakes, getModels, getVehicles} from '../../api';
+import {getMakes, getModels} from '../../api';
 import SelectedCar from '../SelectedCar';
 import Filters from '../Filters';
 import './Main.css';
 import NoCars from "../NoCars";
-
-type VehiclesByBrandAndModel = {
-  [make: string]: {
-    [model: string]: Vehicle[]
-  }
-}
-
-const useCachedVehicles = (make: string | undefined, model: string | undefined, filters: FiltersByKey): { cars: Vehicle[] } => {
-  const [vehiclesByBrandAndModel, setVehiclesByBrandAndModel] = useState<VehiclesByBrandAndModel>({});
-  const [cars, setCars] = useState<Vehicle[]>([]);
-
-  useEffect(() => {
-    const updateCars = async () => {
-      let cars: Vehicle[] = [];
-      if (!make || !model) {
-        setCars(cars);
-        return;
-      }
-      if (vehiclesByBrandAndModel[make]?.[model]) {
-        cars = vehiclesByBrandAndModel[make][model];
-      } else {
-        try {
-          const vehicles = await getVehicles(make, model)
-          setVehiclesByBrandAndModel({
-            ...vehiclesByBrandAndModel,
-            [make]: {
-              ...vehiclesByBrandAndModel[make],
-              [model]: vehicles
-            }
-          });
-          cars = vehicles;
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      setCars(cars);
-
-    }
-    updateCars();
-  }, [make, model, vehiclesByBrandAndModel, filters]);
-
-  return {cars};
-}
+import useCachedVehicles from "../../utils/useCachedVehicles";
 
 const Main = () => {
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
 
   const [filters, setFilters] = useState<FiltersByKey | {}>({})
-
 
   const [selectedMake, setSelectedMake] = useState<string | undefined>();
   const [selectedModel, setSelectedModel] = useState<string | undefined>();
@@ -92,7 +49,7 @@ const Main = () => {
   const changeMake = (make: string) => {
     setSelectedModel(undefined);
     setFilters({});
-    setSelectedMake(make)
+    setSelectedMake(make);
   }
 
   return (
@@ -114,7 +71,11 @@ const Main = () => {
             onChange={setSelectedModel}
             emptyOptionTitle={`Please choose a model`}
           />
-          <Filters vehicles={cars} filters={filters} setFilters={setFilters} />
+          <Filters
+            vehicles={cars}
+            filters={filters}
+            setFilters={setFilters}
+          />
         </div>
         <div className="cars">
           {cars?.length ? (
