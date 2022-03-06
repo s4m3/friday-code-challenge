@@ -2,3 +2,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.number-filter-inputs {
+  display: flex;
+}
+
+.number-filter-selector-root {
+  margin-left: 8px;
+}
