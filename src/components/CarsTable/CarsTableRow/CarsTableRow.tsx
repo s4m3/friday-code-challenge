@@ -10,7 +10,7 @@ const CarsTableRow = ({vehicle, columns, onClick}: CarsTableRowProps) => {
   return (
     <tr>
       {columns.map(type => (
-        <td>{vehicle[type]}</td>
+        <td key={vehicle[type]}>{vehicle[type]}</td>
       ))}
       <td>
         <button onClick={onClick}>Select</button>

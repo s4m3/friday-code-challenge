@@ -3,13 +3,14 @@ import CarsTableRow from './CarsTableRow';
 import CarsTableHead from './CarsTableHead';
 import localization from '../../localization';
 import './CarsTable.css';
+import applyFilters from "../../utils/applyFilters";
 
 interface SortedCarsHook {
   sortedCars: Vehicle[],
   sort: (column: keyof Vehicle) => void
 }
 
-const useSortedCars = (vehicles: Vehicle[]): SortedCarsHook => {
+const useSortedAndFilteredCars = (vehicles: Vehicle[], filters: FiltersByKey): SortedCarsHook => {
   //MAYBE MOVE TO CONSTANTS?
   const SORT_DIRECTIONS = {
     ASCENDING: 'ascending',
@@ -21,7 +22,7 @@ const useSortedCars = (vehicles: Vehicle[]): SortedCarsHook => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const sortedCars = useMemo(() => {
-    let sortingItems: Vehicle[] = Array.from(vehicles);
+    let sortingItems: Vehicle[] = applyFilters(vehicles, filters)
     if (!sortedColumn) {
       return sortingItems;
     }
@@ -35,7 +36,7 @@ const useSortedCars = (vehicles: Vehicle[]): SortedCarsHook => {
       return 0;
     });
     return sortingItems;
-  }, [vehicles, sortedColumn, sortDirection]);
+  }, [vehicles, sortedColumn, sortDirection, filters]);
 
   const sort = (column: keyof Vehicle) => {
     if (sortedColumn === column && sortDirection === SORT_DIRECTIONS.ASCENDING) {
@@ -52,10 +53,11 @@ type CarsTableProps = {
   vehicles: Vehicle[],
   title: string,
   select(vehicle: Vehicle): void;
+  filters: FiltersByKey
 }
 
-const CarsTable = ({vehicles = [], title, select}: CarsTableProps) => {
-  const {sortedCars, sort} = useSortedCars(vehicles);
+const CarsTable = ({vehicles = [], title, select, filters}: CarsTableProps) => {
+  const {sortedCars, sort} = useSortedAndFilteredCars(vehicles, filters);
   if (sortedCars.length === 0) {
     return null;
   }
@@ -68,13 +70,22 @@ const CarsTable = ({vehicles = [], title, select}: CarsTableProps) => {
       <thead>
       <tr>
         {columns.map(column => (
-          <CarsTableHead type={localization[column]} onClick={() => sort(column)} />
+          <CarsTableHead
+            key={localization[column]}
+            type={localization[column]}
+            onClick={() => sort(column)}
+          />
         ))}
       </tr>
       </thead>
       <tbody>
-      {sortedCars.map(vehicle => (
-        <CarsTableRow vehicle={vehicle} columns={columns} onClick={() => select(vehicle)} />
+      {sortedCars.map((vehicle, index) => (
+        <CarsTableRow
+          key={JSON.stringify(vehicle) + index}
+          vehicle={vehicle}
+          columns={columns}
+          onClick={() => select(vehicle)}
+        />
       ))}
       </tbody>
     </table>

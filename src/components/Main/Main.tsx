@@ -3,7 +3,7 @@ import Selector from '../Selector';
 import CarsTable from '../CarsTable';
 import {getMakes, getModels, getVehicles} from '../../api';
 import SelectedCar from '../SelectedCar';
-
+import Filters from '../Filters';
 import './Main.css';
 
 type VehiclesByBrandAndModel = {
@@ -12,18 +12,19 @@ type VehiclesByBrandAndModel = {
   }
 }
 
-const useCachedVehicles = (make: string | undefined, model: string | undefined): { cars: Vehicle[] } => {
+const useCachedVehicles = (make: string | undefined, model: string | undefined, filters: FiltersByKey): { cars: Vehicle[] } => {
   const [vehiclesByBrandAndModel, setVehiclesByBrandAndModel] = useState<VehiclesByBrandAndModel>({});
   const [cars, setCars] = useState<Vehicle[]>([]);
 
   useEffect(() => {
     const updateCars = async () => {
+      let cars: Vehicle[] = [];
       if (!make || !model) {
-        setCars([]);
+        setCars(cars);
         return;
       }
       if (vehiclesByBrandAndModel[make]?.[model]) {
-        setCars(vehiclesByBrandAndModel[make][model]);
+        cars = vehiclesByBrandAndModel[make][model];
       } else {
         try {
           const vehicles = await getVehicles(make, model)
@@ -34,14 +35,16 @@ const useCachedVehicles = (make: string | undefined, model: string | undefined):
               [model]: vehicles
             }
           });
-          setCars(vehicles);
+          cars = vehicles;
         } catch (e) {
           console.error(e);
         }
       }
+      setCars(cars);
+
     }
     updateCars();
-  }, [make, model, vehiclesByBrandAndModel]);
+  }, [make, model, vehiclesByBrandAndModel, filters]);
 
   return {cars};
 }
@@ -49,11 +52,15 @@ const useCachedVehicles = (make: string | undefined, model: string | undefined):
 const Main = () => {
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
+
+  const [filters, setFilters] = useState<FiltersByKey | {}>({})
+
+
   const [selectedMake, setSelectedMake] = useState<string | undefined>();
   const [selectedModel, setSelectedModel] = useState<string | undefined>();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>();
 
-  const {cars} = useCachedVehicles(selectedMake, selectedModel);
+  const {cars} = useCachedVehicles(selectedMake, selectedModel, filters);
 
   useEffect(() => {
     const loadMakes = async () => {
@@ -83,6 +90,7 @@ const Main = () => {
 
   const changeMake = (make: string) => {
     setSelectedModel(undefined);
+    setFilters({});
     setSelectedMake(make)
   }
 
@@ -93,11 +101,27 @@ const Main = () => {
       </header>
       <div className="main">
         <div className="filter">
-          <Selector title="Brand" options={makes} onChange={changeMake} />
-          <Selector title="Model" options={models} onChange={setSelectedModel} />
+          <Selector
+            title="Brand"
+            options={makes}
+            onChange={changeMake}
+            emptyOptionTitle={`Please choose a brand`}
+          />
+          <Selector
+            title="Model"
+            options={models}
+            onChange={setSelectedModel}
+            emptyOptionTitle={`Please choose a model`}
+          />
+          <Filters vehicles={cars} filters={filters} setFilters={setFilters} />
         </div>
         <div className="table">
-          <CarsTable title={`${selectedMake} ${selectedModel}`} vehicles={cars} select={setSelectedVehicle} />
+          <CarsTable
+            title={`${selectedMake} ${selectedModel}`}
+            vehicles={cars}
+            filters={filters}
+            select={setSelectedVehicle}
+          />
         </div>
       </div>
       <SelectedCar vehicle={selectedVehicle} />
