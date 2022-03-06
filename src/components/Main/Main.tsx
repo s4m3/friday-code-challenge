@@ -5,6 +5,7 @@ import {getMakes, getModels, getVehicles} from '../../api';
 import SelectedCar from '../SelectedCar';
 import Filters from '../Filters';
 import './Main.css';
+import NoCars from "../NoCars";
 
 type VehiclesByBrandAndModel = {
   [make: string]: {
@@ -115,13 +116,17 @@ const Main = () => {
           />
           <Filters vehicles={cars} filters={filters} setFilters={setFilters} />
         </div>
-        <div className="table">
-          <CarsTable
-            title={`${selectedMake} ${selectedModel}`}
-            vehicles={cars}
-            filters={filters}
-            select={setSelectedVehicle}
-          />
+        <div className="cars">
+          {cars?.length ? (
+            <CarsTable
+              title={`${selectedMake} ${selectedModel}`}
+              vehicles={cars}
+              filters={filters}
+              select={setSelectedVehicle}
+            />
+          ) : (
+            <NoCars />
+          )}
         </div>
       </div>
       <SelectedCar vehicle={selectedVehicle} />

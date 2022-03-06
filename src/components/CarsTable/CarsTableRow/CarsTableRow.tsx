@@ -13,7 +13,7 @@ const CarsTableRow = ({vehicle, columns, onClick}: CarsTableRowProps) => {
         <td key={vehicle[type]}>{vehicle[type]}</td>
       ))}
       <td>
-        <button onClick={onClick}>Select</button>
+        <button style={{backgroundColor: 'forestgreen', color: 'white'}} onClick={onClick}>Select</button>
       </td>
     </tr>
   );

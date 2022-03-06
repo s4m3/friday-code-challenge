@@ -16,16 +16,15 @@
 }
 
 .filter {
-  flex: 1;
-  padding: 10px;
-}
-
-.table {
-  flex: 4;
   margin: 10px;
 }
 
-@media (max-width: 600px) {
+.cars {
+  flex: 2;
+  margin: 10px;
+}
+
+@media (max-width: 800px) {
   .main {
     flex-direction: column;
   }

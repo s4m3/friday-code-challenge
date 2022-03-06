@@ -1,9 +1,14 @@
-export default (vehicles: Vehicle[]) => {
+import {IGNORED_VEHICLE_PARAMS} from "../constants";
+
+export default (vehicles: Vehicle[], ignoredParams = IGNORED_VEHICLE_PARAMS) => {
   if (!vehicles || vehicles.length === 0) {
     return {};
   }
   const carValuesSetsByKey = vehicles.reduce((res: CarValuesSetByKey, current) => {
     (Object.keys(current) as (keyof Vehicle)[]).forEach((key) => {
+      if (ignoredParams.includes(key)) {
+        return res;
+      }
       if (!res[key]) {
         res[key] = new Set();
       }

@@ -2,8 +2,9 @@ import React, {useMemo, useState} from 'react';
 import CarsTableRow from './CarsTableRow';
 import CarsTableHead from './CarsTableHead';
 import localization from '../../localization';
-import './CarsTable.css';
 import applyFilters from "../../utils/applyFilters";
+import {IGNORED_VEHICLE_PARAMS} from "../../constants";
+import './CarsTable.css';
 
 interface SortedCarsHook {
   sortedCars: Vehicle[],
@@ -63,10 +64,10 @@ const CarsTable = ({vehicles = [], title, select, filters}: CarsTableProps) => {
   }
 
   // remove make and model as it is the same for all
-  const columns: (keyof Vehicle)[] = (Object.keys(sortedCars[0]) as (keyof Vehicle)[]).filter(col => !['make', 'model'].includes(col));
+  const columns: (keyof Vehicle)[] = (Object.keys(sortedCars[0]) as (keyof Vehicle)[]).filter(col => !IGNORED_VEHICLE_PARAMS.includes(col));
   return (
     <table>
-      <caption>{title}</caption>
+      <caption className="table-caption">{title}</caption>
       <thead>
       <tr>
         {columns.map(column => (
@@ -90,7 +91,6 @@ const CarsTable = ({vehicles = [], title, select, filters}: CarsTableProps) => {
       </tbody>
     </table>
   );
-
 }
 
 export default CarsTable;

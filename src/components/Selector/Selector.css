@@ -1,0 +1,4 @@
+.selector-root {
+  display: flex;
+  justify-content: space-between;
+}
