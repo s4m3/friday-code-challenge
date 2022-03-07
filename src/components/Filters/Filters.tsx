@@ -14,7 +14,7 @@ const Filters = ({vehicles, filters, setFilters}: FiltersProps) => {
   const addFilter = (newFilter: FiltersByKey) => setFilters({
     ...filters,
     ...newFilter
-  })
+  });
 
   return (
     <Fragment>
@@ -30,6 +30,6 @@ const Filters = ({vehicles, filters, setFilters}: FiltersProps) => {
       ))}
     </Fragment>
   );
-}
+};
 
 export default Filters;

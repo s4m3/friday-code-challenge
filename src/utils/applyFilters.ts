@@ -1,4 +1,4 @@
-export default (cars: Vehicle[], filterFunctionsByKey: FiltersByKey) => {
+const applyFilters = (cars: Vehicle[], filterFunctionsByKey: FiltersByKey) => {
   if (!cars || !filterFunctionsByKey || cars.length === 0) {
     return [];
   }
@@ -16,5 +16,6 @@ export default (cars: Vehicle[], filterFunctionsByKey: FiltersByKey) => {
       return true;
     })
   })
-
 };
+
+export default applyFilters;

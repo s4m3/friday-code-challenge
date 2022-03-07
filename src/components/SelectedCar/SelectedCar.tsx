@@ -29,6 +29,6 @@ const SelectedCar = ({vehicle}: SelectedCarProps) => {
       <CarInfo fields={vehicle} />
     </Modal>
   )
-}
+};
 
 export default SelectedCar;

@@ -1,6 +1,6 @@
 import {IGNORED_VEHICLE_PARAMS} from "../constants";
 
-export default (vehicles: Vehicle[], ignoredParams = IGNORED_VEHICLE_PARAMS) => {
+const getCarValuesByKey = (vehicles: Vehicle[], ignoredParams = IGNORED_VEHICLE_PARAMS) => {
   if (!vehicles || vehicles.length === 0) {
     return {};
   }
@@ -25,4 +25,6 @@ export default (vehicles: Vehicle[], ignoredParams = IGNORED_VEHICLE_PARAMS) => 
       [curr]: sortedArray
     }
   }, {});
-}
+};
+
+export default getCarValuesByKey;

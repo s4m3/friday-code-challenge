@@ -24,14 +24,22 @@ const GET = async (url) => {
   return response.json();
 }
 
-export const getMakes = async () => {
+const getMakes = async () => {
   return GET(`${HOST}/api/makes`);
 };
 
-export const getModels = async (make = '') => {
+const getModels = async (make = '') => {
   return GET(`${HOST}/api/models?make=${make}`);
 };
 
-export const getVehicles = async (make = '', model = '') => {
+const getVehicles = async (make = '', model = '') => {
   return GET(`${HOST}/api/vehicles?make=${make}&model=${model}`);
 };
+
+const api = {
+  getMakes,
+  getModels,
+  getVehicles
+}
+
+export default api;

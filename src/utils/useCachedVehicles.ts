@@ -1,13 +1,13 @@
-import {useEffect, useState} from "react";
-import {getVehicles} from "../api";
+import {useEffect, useState} from 'react';
+import api from '../api';
 
 type VehiclesByBrandAndModel = {
   [make: string]: {
     [model: string]: Vehicle[]
-  }
+  };
 }
 
-export default (make: string | undefined, model: string | undefined, filters: FiltersByKey): { cars: Vehicle[] } => {
+const useCachedVehicles = (make: string | undefined, model: string | undefined): { cars: Vehicle[] } => {
   const [vehiclesByBrandAndModel, setVehiclesByBrandAndModel] = useState<VehiclesByBrandAndModel>({});
   const [cars, setCars] = useState<Vehicle[]>([]);
 
@@ -22,7 +22,7 @@ export default (make: string | undefined, model: string | undefined, filters: Fi
         cars = vehiclesByBrandAndModel[make][model];
       } else {
         try {
-          const vehicles = await getVehicles(make, model);
+          const vehicles = await api.getVehicles(make, model);
           setVehiclesByBrandAndModel({
             ...vehiclesByBrandAndModel,
             [make]: {
@@ -39,7 +39,9 @@ export default (make: string | undefined, model: string | undefined, filters: Fi
 
     }
     updateCars();
-  }, [make, model, vehiclesByBrandAndModel, filters]);
+  }, [make, model, vehiclesByBrandAndModel]);
 
   return {cars};
 }
+
+export default useCachedVehicles;

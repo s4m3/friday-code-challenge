@@ -3,14 +3,14 @@ import CarsTableRow from './CarsTableRow';
 import CarsTableHead from './CarsTableHead';
 import localization from '../../localization';
 import {IGNORED_VEHICLE_PARAMS} from "../../constants";
-import './CarsTable.css';
 import useSortedAndFilteredCars from "../../utils/useSortedAndFilteredCars";
+import './CarsTable.css';
 
 type CarsTableProps = {
-  vehicles: Vehicle[],
-  title: string,
+  vehicles: Vehicle[];
+  title: string;
   select(vehicle: Vehicle): void;
-  filters: FiltersByKey
+  filters: FiltersByKey;
 }
 
 const CarsTable = ({vehicles = [], title, select, filters}: CarsTableProps) => {
@@ -47,6 +47,6 @@ const CarsTable = ({vehicles = [], title, select, filters}: CarsTableProps) => {
       </tbody>
     </table>
   );
-}
+};
 
 export default CarsTable;

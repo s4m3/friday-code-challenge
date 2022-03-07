@@ -13,14 +13,20 @@ const Selector = ({title, options, onChange, emptyOptionTitle}: SelectorProps) =
   return (
     <div className="selector-root">
       <label>{title}</label>
-      <select disabled={isDisabled} name={title} id={title} onChange={e => onChange(e.target.value)}>
+      <select
+        disabled={isDisabled}
+        name={title}
+        id={title}
+        onChange={e => onChange(e.target.value)}
+        data-testid={title}
+      >
         <option value="">{emptyOptionTitle}</option>
         {options.map(option => (
-          <option key={option} value={option}>{option}</option>
+          <option data-testid={option} key={option} value={option}>{option}</option>
         ))}
       </select>
     </div>
   );
-}
+};
 
 export default Selector;

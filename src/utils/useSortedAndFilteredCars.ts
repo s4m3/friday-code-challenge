@@ -2,12 +2,12 @@ import {useMemo, useState} from "react";
 import {SORT_DIRECTIONS} from "../constants";
 import applyFilters from "./applyFilters";
 
-interface SortedCarsHook {
-  sortedCars: Vehicle[],
-  sort: (column: keyof Vehicle) => void
+type SortedCarsHook = {
+  sortedCars: Vehicle[];
+  sort: (column: keyof Vehicle) => void;
 }
 
-export default (vehicles: Vehicle[], filters: FiltersByKey): SortedCarsHook => {
+const useSortedAndFilteredCars = (vehicles: Vehicle[], filters: FiltersByKey): SortedCarsHook => {
   const [sortDirection, setSortDirection] = useState(SORT_DIRECTIONS.ASCENDING);
   const [sortedColumn, setSortedColumn] = useState<keyof Vehicle | null>(null);
 
@@ -39,3 +39,5 @@ export default (vehicles: Vehicle[], filters: FiltersByKey): SortedCarsHook => {
   }
   return {sortedCars, sort};
 }
+
+export default useSortedAndFilteredCars;

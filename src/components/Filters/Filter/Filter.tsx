@@ -5,7 +5,7 @@ import StringFilter from './StringFilter';
 type FilterProps = {
   title: string;
   type: string | number;
-  parameter: keyof Vehicle
+  parameter: keyof Vehicle;
   values: string[] | number[];
   addFilter: (filters: FiltersByKey) => void;
 }

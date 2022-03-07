@@ -1,29 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import Selector from '../Selector';
 import CarsTable from '../CarsTable';
-import {getMakes, getModels} from '../../api';
+import api from '../../api';
 import SelectedCar from '../SelectedCar';
 import Filters from '../Filters';
-import './Main.css';
 import NoCars from "../NoCars";
 import useCachedVehicles from "../../utils/useCachedVehicles";
+import './Main.css';
 
 const Main = () => {
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
-
   const [filters, setFilters] = useState<FiltersByKey | {}>({})
 
   const [selectedMake, setSelectedMake] = useState<string | undefined>();
   const [selectedModel, setSelectedModel] = useState<string | undefined>();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>();
 
-  const {cars} = useCachedVehicles(selectedMake, selectedModel, filters);
+  const {cars} = useCachedVehicles(selectedMake, selectedModel);
 
   useEffect(() => {
     const loadMakes = async () => {
       try {
-        const makes = await getMakes();
+        const makes = await api.getMakes();
         setMakes(makes);
       } catch (e) {
         console.error(e);
@@ -36,7 +35,7 @@ const Main = () => {
     const loadCars = async () => {
       try {
         if (selectedMake) {
-          const models = await getModels(selectedMake)
+          const models = await api.getModels(selectedMake)
           setModels(models);
         }
       } catch (e) {
@@ -93,7 +92,6 @@ const Main = () => {
       <SelectedCar vehicle={selectedVehicle} />
     </div>
   );
-
-}
+};
 
 export default Main;

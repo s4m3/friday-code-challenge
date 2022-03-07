@@ -1,1 +1,1 @@
-export { default } from './SelectedCar'
+export {default} from './SelectedCar';
